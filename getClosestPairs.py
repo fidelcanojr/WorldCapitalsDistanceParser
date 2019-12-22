@@ -4,6 +4,7 @@ import sys
 
 cities = {}
 cities_matrix = {}
+capital_to_country = {}
 R = 6371 # Radius of the Earth in Km
 n = None
 try:
@@ -31,17 +32,23 @@ with open('country-capitals.csv', 'r') as f:
                 cities[line[1]] = (float(line[2]), float(line[3]))
             if line[2] == ' D.C':
                 cities[line[1]] = (float(line[3]), float(line[4]))
+        capital_to_country[line[1]] = line[0]
 
 for firstCity in cities.keys():
     for secondCity in cities.keys():
         d = getDistance(firstCity, secondCity)
         if d :
-            cities_matrix[firstCity + ',' + secondCity] = d
+            key = firstCity + ', ' + capital_to_country[firstCity] + ' : ' +secondCity + ', ' + capital_to_country[secondCity]
+            cities_matrix[key] = d
 
 winners = sorted(cities_matrix, key=cities_matrix.__getitem__)
 
+i = 1
 if n:
-    print(winners[0:int(n)*2:2])
+    for winner in winners[0:int(n)*2:2]:
+        print(str(i) + ". " + winner + " (%.2f km)" % cities_matrix[winner])
+        i += 1
 else:
-    print(winners)
-print(n)
+    for winner in winners[::2]:
+        print(str(i) + ". " + winner + " (%.2f km)" % cities_matrix[winner])
+        i += 1
