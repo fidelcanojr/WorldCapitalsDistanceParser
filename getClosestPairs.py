@@ -13,7 +13,7 @@ try:
 except IndexError:
     pass
 
-def getDistance(city1, city2):
+def getDistance(city1, city2, withDebug=True):
     lat1, long1 = cities[city1]
     lat2, long2 = cities[city2]
     dLat = (lat2 - lat1) * math.pi/180
@@ -24,7 +24,8 @@ def getDistance(city1, city2):
     if out > threshold:
         return out
     else:
-        print("Invalid query: these are the same cities")
+        if withDebug:
+            print("Invalid query: these are the same cities")
 
 with open('country-capitals.csv', 'r') as f:
     citiesReader = csv.reader(f)
@@ -38,7 +39,7 @@ with open('country-capitals.csv', 'r') as f:
 
 for firstCity in cities.keys():
     for secondCity in cities.keys():
-        d = getDistance(firstCity, secondCity)
+        d = getDistance(firstCity, secondCity, withDebug=False)
         if d :
             key = firstCity + ', ' + capital_to_country[firstCity] + ' : ' +secondCity + ', ' + capital_to_country[secondCity]
             cities_matrix[key] = d
