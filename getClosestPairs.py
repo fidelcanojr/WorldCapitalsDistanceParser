@@ -5,6 +5,7 @@ import sys
 cities = {}
 cities_matrix = {}
 capital_to_country = {}
+threshold = 0.001 # Cities whose centers are 1m apart are considered the same
 R = 6371 # Radius of the Earth in Km
 n = None
 try:
@@ -13,14 +14,15 @@ except IndexError:
     pass
 
 def getDistance(city1, city2):
-    if 'city1' != 'city2':
-        lat1, long1 = cities[city1]
-        lat2, long2 = cities[city2]
-        dLat = (lat2 - lat1) * math.pi/180
-        dLon = (long2 - long1) * math.pi/180
-        a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(lat1 * math.pi/180) * math.cos(lat2 * math.pi/180) * math.sin(dLon/2) * math.sin(dLon/2)
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a));
-        return R * c
+    lat1, long1 = cities[city1]
+    lat2, long2 = cities[city2]
+    dLat = (lat2 - lat1) * math.pi/180
+    dLon = (long2 - long1) * math.pi/180
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(lat1 * math.pi/180) * math.cos(lat2 * math.pi/180) * math.sin(dLon/2) * math.sin(dLon/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a));
+    out = R * c
+    if out > threshold:
+        return out
     else:
         print("Invalid query: these are the same cities")
 
